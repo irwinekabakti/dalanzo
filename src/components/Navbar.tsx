@@ -72,7 +72,7 @@ const Navbar: FC = () => {
 
       <div
         className={`links cursor-pointer ${
-          menuOpen ? "block absolute top-16 min-h-screen w-1/2" : "hidden "
+          menuOpen ? "block absolute top-16 min-h-screen w-1/2 z-50" : "hidden "
         } right-0 bg-blue-600 md:relative md:flex md:bg-transparent`}
       >
         <ul className="flex flex-col md:flex-row justify-around gap-4 md:p-0">

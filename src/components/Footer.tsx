@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { Link } from "react-router-dom";
 import { AiFillFacebook, AiFillInstagram, AiFillYoutube } from "react-icons/ai";
-// import { RiTwitterXFill } from "react-icons/ri";
 import { RiTwitterXLine } from "react-icons/ri";
 
 const Footer: FC = () => {
