@@ -33,21 +33,3 @@ const CustomPagination: FC = () => {
 };
 
 export default CustomPagination;
-
-/*
-import { FC } from "react";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
-
-const CustomPagination: FC = () => {
-  return (
-    <div className="flex justify-center my-4">
-      <Stack spacing={2}>
-        <Pagination count={10} />
-      </Stack>
-    </div>
-  );
-};
-
-export default CustomPagination;
-*/
