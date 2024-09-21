@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom";
 import SignIn from "../pages/SignIn";
 import RootLayout from "./RootLayout/RootLayout";
 import ProductsList from "../pages/ProductsList";
+import ProductDetail from "../pages/ProductDetail";
 
 const Routes = () => {
   const user = localStorage.getItem("access_token");
@@ -12,8 +13,12 @@ const Routes = () => {
       element: <RootLayout />,
       children: [
         {
-          path: "/product-list",
+          path: "/products-list",
           element: user ? <ProductsList /> : <Navigate to="/sign-in" />,
+        },
+        {
+          path: "/product-detail/:id",
+          element: user ? <ProductDetail /> : <Navigate to="/sign-in" />,
         },
       ],
     },

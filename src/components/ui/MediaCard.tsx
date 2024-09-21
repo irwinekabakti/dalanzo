@@ -2,11 +2,13 @@ import { FC } from "react";
 import { ProductProps } from "../../types/type";
 import { FaStar } from "react-icons/fa";
 import { RootState, useAppSelector } from "../../store";
+import { useNavigate } from "react-router";
 
 const MediaCard: FC = () => {
   const { products, currentPage, itemsPerPage } = useAppSelector(
     (state: RootState) => state.product
   );
+  const navigate = useNavigate();
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const selectedProducts = products.slice(
@@ -33,6 +35,7 @@ const MediaCard: FC = () => {
         <div
           className="bg-white shadow-md rounded-lg overflow-hidden"
           key={product?.id}
+          onClick={() => navigate(`/product-detail/${product.id}`)}
         >
           <img
             className="w-32 h-32 items-center mx-auto mt-4"
