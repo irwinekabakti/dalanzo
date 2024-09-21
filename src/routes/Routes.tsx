@@ -14,7 +14,7 @@ const Routes = () => {
       children: [
         {
           path: "/products-list",
-          element: user ? <ProductsList /> : <Navigate to="/sign-in" />,
+          element: <ProductsList />,
         },
         {
           path: "/product-detail/:id",

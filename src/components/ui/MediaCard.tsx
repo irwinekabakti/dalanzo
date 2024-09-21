@@ -2,7 +2,7 @@ import { FC } from "react";
 import { ProductProps } from "../../types/type";
 import { FaStar } from "react-icons/fa";
 import { RootState, useAppSelector } from "../../store";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const MediaCard: FC = () => {
   const { products, currentPage, itemsPerPage } = useAppSelector(
@@ -33,7 +33,7 @@ const MediaCard: FC = () => {
     <>
       {selectedProducts.map((product: ProductProps) => (
         <div
-          className="bg-white shadow-md rounded-lg overflow-hidden"
+          className="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer"
           key={product?.id}
           onClick={() => navigate(`/product-detail/${product.id}`)}
         >
