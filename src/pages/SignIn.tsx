@@ -29,7 +29,7 @@ const SignIn: FC = () => {
     try {
       const result = await login(values).unwrap();
       localStorage.setItem("access_token", result.token);
-      navigate("/product-list");
+      navigate("/products-list");
     } catch (err) {
       console.error("Failed to login:", err);
     }

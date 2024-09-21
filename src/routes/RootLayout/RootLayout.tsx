@@ -1,17 +1,17 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 
 const RootLayout = () => {
-  const navigate = useNavigate();
-  const user = localStorage.getItem("access_token");
+  // const navigate = useNavigate();
+  // const user = localStorage.getItem("access_token");
 
-  useEffect(() => {
-    if (!user) {
-      navigate("/sign-in");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!user) {
+  //     navigate("/sign-in");
+  //   }
+  // }, []);
 
   return (
     <>

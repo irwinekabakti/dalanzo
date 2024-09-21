@@ -45,8 +45,3 @@ const ProductsList: FC = () => {
 };
 
 export default ProductsList;
-
-// npm i react-slick
-// "email": "don@gmail.com",
-// "username": "donero",
-// "password": "ewedon",
