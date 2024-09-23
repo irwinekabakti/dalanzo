@@ -2,11 +2,15 @@ import { FC } from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useLoginMutation } from "../store/query/useLogin";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface LoginFormData {
   username: string;
   password: string;
+}
+
+interface LocationState {
+  from: string;
 }
 
 const validationSchema = Yup.object().shape({
@@ -19,17 +23,21 @@ const validationSchema = Yup.object().shape({
 const SignIn: FC = () => {
   const [login, { isLoading, error }] = useLoginMutation();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const initialValues: LoginFormData = {
     username: "",
     password: "",
   };
 
+  const state = location.state as LocationState;
+  const urlPath = state?.from || "/products-list";
+
   const handleSubmit = async (values: LoginFormData) => {
     try {
       const result = await login(values).unwrap();
       localStorage.setItem("access_token", result.token);
-      navigate("/products-list");
+      navigate(urlPath, { replace: true });
     } catch (err) {
       console.error("Failed to login:", err);
     }

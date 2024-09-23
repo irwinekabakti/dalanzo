@@ -57,13 +57,23 @@ const ProductsList: FC = () => {
     <>
       <Hero />
       <div className="mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4 mx-4 md:mx-8">
-          <MediaCard productsFilter={paginatedProducts} />
-        </div>
-        <CustomPagination
-          totalItems={filteredProducts.length}
-          itemsPerPage={itemsPerPage}
-        />
+        {filteredProducts.length === 0 ? (
+          <div className="flex justify-center items-center my-60">
+            <h1 className="text-red-600 text-2xl md:text-4xl">
+              Item not found
+            </h1>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4 mx-4 md:mx-8">
+              <MediaCard productsFilter={paginatedProducts} />
+            </div>
+            <CustomPagination
+              totalItems={filteredProducts.length}
+              itemsPerPage={itemsPerPage}
+            />
+          </>
+        )}
       </div>
     </>
   );

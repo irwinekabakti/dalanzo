@@ -1,13 +1,27 @@
-import { Navigate } from "react-router-dom";
+import { FC, ReactNode } from "react";
+import { Navigate, RouteObject, useLocation } from "react-router-dom";
 import SignIn from "../pages/SignIn";
 import RootLayout from "./RootLayout/RootLayout";
 import ProductsList from "../pages/ProductsList";
 import ProductDetail from "../pages/ProductDetail";
 import CartPage from "../pages/CartPage";
 
-const Routes = () => {
-  const user = localStorage.getItem("access_token");
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
 
+const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
+  const user = localStorage.getItem("access_token");
+  const location = useLocation();
+
+  if (!user) {
+    return <Navigate to="/sign-in" state={{ from: location }} replace />;
+  }
+
+  return <>{children}</>;
+};
+
+const Routes = (): RouteObject[] => {
   return [
     {
       path: "/",
@@ -15,7 +29,7 @@ const Routes = () => {
       children: [
         {
           index: true,
-          element: <Navigate to="/products-list" replace />,
+          element: <ProductsList />,
         },
         {
           path: "/products-list",
@@ -23,19 +37,22 @@ const Routes = () => {
         },
         {
           path: "/product-detail/:id",
-          element: user ? <ProductDetail /> : <Navigate to="/sign-in" />,
+          element: <ProductDetail />,
         },
         {
           path: "/cart",
-          element: <CartPage />,
+          element: (
+            <ProtectedRoute>
+              <CartPage />
+            </ProtectedRoute>
+          ),
         },
-        // {
-        //   path: "/cart",
-        //   element: user ? <CartPage /> : <Navigate to="/sign-in" />,
-        // },
       ],
     },
-    { path: "/sign-in", element: <SignIn /> },
+    {
+      path: "/sign-in",
+      element: <SignIn />,
+    },
   ];
 };
 
