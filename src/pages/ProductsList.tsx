@@ -1,6 +1,6 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import { useAppDispatch } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
 import { useGetAllProductsQuery } from "../store/query/getProducts";
 import { setProducts } from "../store/slice/products-slice";
 import MediaSkeleton from "../components/ui/CustomSkeleton";
@@ -11,12 +11,33 @@ import CustomPagination from "../components/ui/CustomPagination";
 const ProductsList: FC = () => {
   const dispatch = useAppDispatch();
   const { data: products, isLoading, error } = useGetAllProductsQuery();
+  const searchTerm = useAppSelector((state) => state.product.searchProducts);
+  const currentPage = useAppSelector((state) => state.product.currentPage);
+  const itemsPerPage = 12;
+  const [filteredProducts, setFilteredProducts] = useState(products || []);
 
   useEffect(() => {
     if (products) {
       dispatch(setProducts(products));
+      setFilteredProducts(products);
     }
   }, [dispatch, products]);
+
+  useEffect(() => {
+    if (products) {
+      const filtered = products.filter((product) =>
+        product.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      setFilteredProducts(filtered);
+    }
+  }, [searchTerm, products]);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   if (isLoading) {
     return (
@@ -29,6 +50,7 @@ const ProductsList: FC = () => {
       </div>
     );
   }
+
   if (error) return <div>Error loading products</div>;
 
   return (
@@ -36,9 +58,12 @@ const ProductsList: FC = () => {
       <Hero />
       <div className="mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4 mx-4 md:mx-8">
-          <MediaCard />
+          <MediaCard productsFilter={paginatedProducts} />
         </div>
-        <CustomPagination />
+        <CustomPagination
+          totalItems={filteredProducts.length}
+          itemsPerPage={itemsPerPage}
+        />
       </div>
     </>
   );

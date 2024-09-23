@@ -3,6 +3,8 @@ import { FaCartShopping } from "react-icons/fa6";
 import { IoSearch, IoMenu, IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import CustomModal from "./ui/CustomModal";
+import { useAppDispatch, useAppSelector } from "../store";
+import { setSearchProducts } from "../store/slice/products-slice";
 
 const Navbar: FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -11,7 +13,13 @@ const Navbar: FC = () => {
   const [isLogoutModalVisible, setIsLogoutModalVisible] =
     useState<boolean>(false);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const user = localStorage.getItem("access_token");
+  const cartItems = useAppSelector((state) => state.cart.items);
+  const cartItemCount = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -38,6 +46,12 @@ const Navbar: FC = () => {
     setIsLogoutModalVisible(false);
   };
 
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    dispatch(setSearchProducts(event.target.value));
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -54,10 +68,18 @@ const Navbar: FC = () => {
     };
   }, []);
 
+  const handleProductsList = () => {
+    navigate("/products-list");
+  };
+
+  const handleCartClick = () => {
+    navigate("/cart");
+  };
+
   return (
     <>
       <nav className="flex h-16 justify-between bg-blue-600 text-white items-center px-2 md:px-4">
-        <div className="logo cursor-pointer">
+        <div className="logo cursor-pointer" onClick={handleProductsList}>
           <h1 className="text-2xl bg-orange-500">Dalanzo</h1>
         </div>
 
@@ -79,6 +101,7 @@ const Navbar: FC = () => {
                   ? "w-40 opacity-100"
                   : "w-0 opacity-0 sm:hidden"
               }`}
+              onChange={handleSearchInputChange}
             />
           </div>
         </div>
@@ -103,9 +126,22 @@ const Navbar: FC = () => {
           } right-0 bg-blue-600 md:relative md:flex md:bg-transparent`}
         >
           <ul className="flex flex-col md:flex-row justify-around gap-4 md:p-0">
-            <li className="mx-auto md:mx-2 my-auto">Product</li>
-            <li className="mx-auto md:mx-2 my-auto">
+            <li
+              className="mx-auto md:mx-2 my-auto"
+              onClick={handleProductsList}
+            >
+              Products List
+            </li>
+            <li
+              className="mx-auto md:mx-2 my-auto relative"
+              onClick={handleCartClick}
+            >
               <FaCartShopping size={24} />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                  {cartItemCount}
+                </span>
+              )}
             </li>
             <li
               className={`mx-auto md:mx-2 my-auto rounded-lg ${
