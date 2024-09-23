@@ -1,10 +1,11 @@
 import { FC, useState, useRef, useEffect } from "react";
 import { FaCartShopping } from "react-icons/fa6";
 import { IoSearch, IoMenu, IoClose } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CustomModal from "./ui/CustomModal";
 import { useAppDispatch, useAppSelector } from "../store";
 import { setSearchProducts } from "../store/slice/products-slice";
+import logoImg from "../assets/logo.svg";
 
 const Navbar: FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -14,7 +15,9 @@ const Navbar: FC = () => {
     useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const location = useLocation();
   const user = localStorage.getItem("access_token");
+
   const cartItems = useAppSelector((state) => state.cart.items);
   const cartItemCount = cartItems.reduce(
     (total, item) => total + item.quantity,
@@ -78,12 +81,22 @@ const Navbar: FC = () => {
 
   return (
     <>
-      <nav className="flex h-16 justify-between bg-blue-600 text-white items-center px-2 md:px-4">
-        <div className="logo cursor-pointer" onClick={handleProductsList}>
-          <h1 className="text-2xl bg-orange-500">Dalanzo</h1>
+      <nav className="flex h-16 w-full justify-between bg-blue-600 text-white items-center px-2 md:px-4">
+        <div
+          className="flex items-center py-1 px-2 cursor-pointer gap-2"
+          onClick={handleProductsList}
+        >
+          <img src={logoImg} alt="logo-img" className="h-6 w-6" />
+          <h1 className="text-2xl ">Dalanzo</h1>
         </div>
 
-        <div className="search flex relative items-center">
+        <div
+          className={`${
+            location.pathname === "/cart"
+              ? "hidden"
+              : "search flex relative items-center"
+          } `}
+        >
           <div className="relative">
             <IoSearch
               size={24}
@@ -121,7 +134,7 @@ const Navbar: FC = () => {
         <div
           className={`links cursor-pointer ${
             menuOpen
-              ? "block absolute top-16 min-h-screen w-1/2 z-50"
+              ? "block absolute top-16 min-h-screen w-1/2 z-10"
               : "hidden "
           } right-0 bg-blue-600 md:relative md:flex md:bg-transparent`}
         >
