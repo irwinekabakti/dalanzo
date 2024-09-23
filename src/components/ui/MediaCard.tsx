@@ -1,20 +1,14 @@
 import { FC } from "react";
 import { ProductProps } from "../../types/type";
 import { FaStar } from "react-icons/fa";
-import { RootState, useAppSelector } from "../../store";
 import { useNavigate } from "react-router-dom";
 
-const MediaCard: FC = () => {
-  const { products, currentPage, itemsPerPage } = useAppSelector(
-    (state: RootState) => state.product
-  );
-  const navigate = useNavigate();
+interface MediaCardProps {
+  productsFilter: ProductProps[];
+}
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const selectedProducts = products.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+const MediaCard: FC<MediaCardProps> = ({ productsFilter }) => {
+  const navigate = useNavigate();
 
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
@@ -31,7 +25,7 @@ const MediaCard: FC = () => {
 
   return (
     <>
-      {selectedProducts.map((product: ProductProps) => (
+      {productsFilter.map((product: ProductProps) => (
         <div
           className="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer"
           key={product?.id}

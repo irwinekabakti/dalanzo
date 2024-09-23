@@ -3,7 +3,8 @@ import { FaCartShopping } from "react-icons/fa6";
 import { IoSearch, IoMenu, IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import CustomModal from "./ui/CustomModal";
-import { useAppSelector } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
+import { setSearchProducts } from "../store/slice/products-slice";
 
 const Navbar: FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -12,6 +13,7 @@ const Navbar: FC = () => {
   const [isLogoutModalVisible, setIsLogoutModalVisible] =
     useState<boolean>(false);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const user = localStorage.getItem("access_token");
   const cartItems = useAppSelector((state) => state.cart.items);
   const cartItemCount = cartItems.reduce(
@@ -42,6 +44,12 @@ const Navbar: FC = () => {
 
   const handleLogoutCancel = () => {
     setIsLogoutModalVisible(false);
+  };
+
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    dispatch(setSearchProducts(event.target.value));
   };
 
   useEffect(() => {
@@ -93,6 +101,7 @@ const Navbar: FC = () => {
                   ? "w-40 opacity-100"
                   : "w-0 opacity-0 sm:hidden"
               }`}
+              onChange={handleSearchInputChange}
             />
           </div>
         </div>
