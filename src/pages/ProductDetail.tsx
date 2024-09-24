@@ -1,34 +1,21 @@
-import { FC, useEffect } from "react";
+import { FC, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetProductByIdQuery } from "../store/query/getProducts";
-import { useAppDispatch, useAppSelector } from "../store";
-import {
-  setProductDetail,
-  setLoading,
-  setError,
-} from "../store/slice/productDetail-slice";
+import { useAppDispatch } from "../store";
 import { addToCart } from "../store/slice/cart-slice";
-import { FaStar } from "react-icons/fa";
+import Rating from "../components/ui/Rating";
+import { getCurrency } from "../utils/currencyUtils";
 
 const ProductDetail: FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useGetProductByIdQuery(Number(id));
   const navigate = useNavigate();
-  const { product, loading, error } = useAppSelector(
-    (state) => state.productDetail
-  );
-
-  const { data, isLoading, isError } = useGetProductByIdQuery(Number(id));
-
-  useEffect(() => {
-    if (isLoading) {
-      dispatch(setLoading(true));
-    } else if (isError) {
-      dispatch(setError("Failed to fetch product details"));
-    } else if (data) {
-      dispatch(setProductDetail(data));
-    }
-  }, [data, isLoading, isError, dispatch]);
+  const [activeTab, setActiveTab] = useState<"detail" | "categories">("detail");
 
   const handleAddToCart = () => {
     const user = localStorage.getItem("access_token");
@@ -43,8 +30,8 @@ const ProductDetail: FC = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading product</div>;
   if (!product) return null;
 
   return (
@@ -58,21 +45,59 @@ const ProductDetail: FC = () => {
           />
         </div>
         <div className="md:w-1/2 md:pl-8 mt-4 md:mt-0">
-          <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
-          <p className="text-gray-600 mb-4">{product.description}</p>
-          <div className="flex items-center mb-4">
+          <div className="mb-4">
+            <div className="flex border-b">
+              <button
+                className={`py-2 px-4 ${
+                  activeTab === "detail"
+                    ? "border-l border-t border-r rounded-t text-blue-700 bg-white"
+                    : "text-blue-500 hover:text-blue-800"
+                }`}
+                onClick={() => setActiveTab("detail")}
+              >
+                Detail
+              </button>
+              <button
+                className={`py-2 px-4 ${
+                  activeTab === "categories"
+                    ? "border-l border-t border-r rounded-t text-blue-700 bg-white"
+                    : "text-blue-500 hover:text-blue-800"
+                }`}
+                onClick={() => setActiveTab("categories")}
+              >
+                Categories
+              </button>
+            </div>
+          </div>
+
+          <div className="tab-content">
+            {activeTab === "detail" && (
+              <div>
+                <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
+                <p className="text-gray-600 mb-4">{product.description}</p>
+              </div>
+            )}
+            {activeTab === "categories" && (
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Categories</h2>
+                <p>{product.category}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="flex justify-between items-center mb-4 mt-4">
             <span className="text-2xl font-bold mr-2">
-              ${product.price.toFixed(2)}
+              {getCurrency(product.price)}
             </span>
             <div className="flex items-center">
-              <FaStar className="text-yellow-400 mr-1" />
-              <span>
+              <Rating rating={product.rating.rate} />
+              <p className="ml-2">
                 {product.rating.rate} ({product.rating.count} reviews)
-              </span>
+              </p>
             </div>
           </div>
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
             onClick={handleAddToCart}
           >
             Add to Cart

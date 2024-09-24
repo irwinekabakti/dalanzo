@@ -5,6 +5,7 @@ import {
   removeFromCart,
 } from "../store/slice/cart-slice";
 import { useNavigate } from "react-router-dom";
+import { getCurrency } from "../utils/currencyUtils";
 
 const CartPage: FC = () => {
   const cartItems = useAppSelector((state) => state.cart.items);
@@ -95,7 +96,7 @@ const CartPage: FC = () => {
           </div>
           <div className="mt-4 flex justify-between items-center">
             <div className="text-xl font-bold">
-              Total: ${totalPrice.toFixed(2)}
+              Total: {getCurrency(totalPrice)}
             </div>
             <div>
               <button

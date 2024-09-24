@@ -1,7 +1,8 @@
 import { FC } from "react";
 import { ProductProps } from "../../types/type";
-import { FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import Rating from "./Rating";
+import { getCurrency } from "../../utils/currencyUtils";
 
 interface MediaCardProps {
   productsFilter: ProductProps[];
@@ -12,15 +13,6 @@ const MediaCard: FC<MediaCardProps> = ({ productsFilter }) => {
 
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
-
-  const getCurrency = (price: number) => {
-    const formatter = new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-    });
-    return formatter.format(price);
   };
 
   return (
@@ -47,7 +39,10 @@ const MediaCard: FC<MediaCardProps> = ({ productsFilter }) => {
           <div className="p-4 flex justify-between">
             <div className="flex gap-2 items-center">
               <p className="text-lg">{product?.rating?.rate}</p>
-              <FaStar className="text-yellow-400" />
+              <Rating rating={product?.rating?.rate} />
+              <span className="text-sm text-gray-600">
+                ({product?.rating?.count})
+              </span>
             </div>
             <div className="text-black font-semibold">
               <h1 className="text-xl">{getCurrency(product?.price)}</h1>

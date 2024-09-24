@@ -92,7 +92,7 @@ const Navbar: FC = () => {
 
         <div
           className={`${
-            location.pathname === "/cart"
+            location.pathname !== "/products-list"
               ? "hidden"
               : "search flex relative items-center"
           } `}
@@ -159,7 +159,11 @@ const Navbar: FC = () => {
             <li
               className={`mx-auto md:mx-2 my-auto rounded-lg ${
                 menuOpen ? "py-2 px-14" : "py-2 px-4"
-              } ${user ? "bg-red-500" : "bg-green-500"}`}
+              } ${
+                user
+                  ? "bg-red-500 hover:bg-red-600"
+                  : "bg-green-500 hover:bg-green-600"
+              }`}
               onClick={user ? handleLogoutClick : () => navigate("/sign-in")}
             >
               {user ? "Logout" : "Login"}
