@@ -1,4 +1,4 @@
-export const useCurrency = (price: number) => {
+export const getCurrency = (price: number): string => {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",

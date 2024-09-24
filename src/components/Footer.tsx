@@ -30,22 +30,38 @@ const Footer: FC = () => {
           </div>
 
           <div className="flex flex-wrap justify-center items-center space-x-4 text-sm text-gray-600">
-            <Link to="/" className="border p-1 rounded-full">
+            <Link
+              to="https://www.facebook.com/"
+              className="border p-1 rounded-full"
+            >
               <AiFillFacebook size={20} className="text-white" />
             </Link>
-            <Link to="/" className="border p-1 rounded-full">
+            <Link
+              to="https://www.instagram.com/"
+              className="border p-1 rounded-full"
+            >
               <AiFillInstagram size={20} className="text-white" />
             </Link>
-            <Link to="/" className="border p-1 rounded-full">
+            <Link
+              to="https://www.youtube.com/"
+              className="border p-1 rounded-full"
+            >
               <AiFillYoutube size={20} className="text-white" />
             </Link>
-            <Link to="/" className="border p-1 rounded-full">
+            <Link to="https://x.com/" className="border p-1 rounded-full">
               <RiTwitterXLine size={20} className="text-white" />
             </Link>
           </div>
-          <div className="text-center text-white text-sm max-w-2xl">
+          <div className="text-center text-white text-sm max-w-2xl cursor-pointer">
             <p className="text-base">
-              &copy; {year} Dalanzo. All rights reserved.
+              &copy; {year}{" "}
+              <a
+                href="https://github.com/irwinekabakti/dalanzo"
+                className="hover:underline"
+              >
+                Dalanzo
+              </a>
+              . All rights reserved.
             </p>
           </div>
         </div>
