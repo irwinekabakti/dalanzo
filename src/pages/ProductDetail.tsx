@@ -1,21 +1,32 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetProductByIdQuery } from "../store/query/getProducts";
-import { useAppDispatch } from "../store";
+// import { useGetProductByIdQuery } from "../store/query/getProducts";
+import { useAppDispatch, useAppSelector } from "../store";
 import { addToCart } from "../store/slice/cart-slice";
 import Rating from "../components/ui/Rating";
 import { getCurrency } from "../utils/currencyUtils";
+import { getProductById } from "../store/asyncThunk/products-thunk";
+import { STATUS } from "../utils/status";
 
 const ProductDetail: FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
-  const {
-    data: product,
-    isLoading,
-    isError,
-  } = useGetProductByIdQuery(Number(id));
+  // const {
+  //   data: product,
+  //   isLoading,
+  //   isError,
+  // } = useGetProductByIdQuery(Number(id));
+  const { product, status, error } = useAppSelector(
+    (state) => state.productDetail
+  );
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"detail" | "categories">("detail");
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getProductById(Number(id)));
+    }
+  }, []);
 
   const handleAddToCart = () => {
     const user = localStorage.getItem("access_token");
@@ -30,8 +41,17 @@ const ProductDetail: FC = () => {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading product</div>;
+  // if (isLoading) return <div>Loading...</div>;
+  // if (isError) return <div>Error loading product</div>;
+
+  if (status === STATUS.LOADING) {
+    return <div>Loading...</div>;
+  }
+
+  if (status === STATUS.FAILED) {
+    return <div>Error loading product: {error}</div>;
+  }
+
   if (!product) return null;
 
   return (

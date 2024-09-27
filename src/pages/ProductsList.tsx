@@ -1,27 +1,36 @@
 import { FC, useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../store";
-import { useGetAllProductsQuery } from "../store/query/getProducts";
-import { setProducts } from "../store/slice/products-slice";
+// import { useGetAllProductsQuery } from "../store/query/getProducts";
+// import { setProducts } from "../store/slice/products-slice";
 import MediaSkeleton from "../components/ui/CustomSkeleton";
 import Hero from "../components/Hero";
 import MediaCard from "../components/ui/MediaCard";
 import CustomPagination from "../components/ui/CustomPagination";
+import { getAllProducts } from "../store/asyncThunk/productDetail-thunk";
+import { STATUS } from "../utils/status";
 
 const ProductsList: FC = () => {
   const dispatch = useAppDispatch();
-  const { data: products, isLoading, error } = useGetAllProductsQuery();
+  // const { data: products, isLoading, error } = useGetAllProductsQuery();
+  const { products, status, error } = useAppSelector((state) => state.product);
   const searchTerm = useAppSelector((state) => state.product.searchProducts);
   const currentPage = useAppSelector((state) => state.product.currentPage);
   const itemsPerPage = 12;
   const [filteredProducts, setFilteredProducts] = useState(products || []);
 
+  // useEffect(() => {
+  //   if (products) {
+  //     dispatch(setProducts(products));
+  //     setFilteredProducts(products);
+  //   }
+  // }, [dispatch, products]);
+
   useEffect(() => {
-    if (products) {
-      dispatch(setProducts(products));
-      setFilteredProducts(products);
+    if (status === STATUS.IDLE) {
+      dispatch(getAllProducts());
     }
-  }, [dispatch, products]);
+  }, []);
 
   useEffect(() => {
     if (products) {
@@ -39,7 +48,21 @@ const ProductsList: FC = () => {
     startIndex + itemsPerPage
   );
 
-  if (isLoading) {
+  // if (isLoading) {
+  //   return (
+  //     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4 mx-4 md:mx-8">
+  //       {[...Array(12)].map((_, index) => (
+  //         <Box sx={{ overflow: "hidden" }} key={index}>
+  //           <MediaSkeleton loading />
+  //         </Box>
+  //       ))}
+  //     </div>
+  //   );
+  // }
+
+  // if (error) return <div>Error loading products</div>;
+
+  if (status === STATUS.LOADING) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4 mx-4 md:mx-8">
         {[...Array(12)].map((_, index) => (
@@ -51,7 +74,9 @@ const ProductsList: FC = () => {
     );
   }
 
-  if (error) return <div>Error loading products</div>;
+  if (status === STATUS.FAILED) {
+    return <div>Error loading products: {error}</div>;
+  }
 
   return (
     <>
