@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { STATUS } from "../../utils/status";
 
 interface CartItem {
   id: number;
@@ -10,10 +11,14 @@ interface CartItem {
 
 interface CartState {
   items: CartItem[];
+  status: string;
+  error?: string | null;
 }
 
 const initialState: CartState = {
   items: [],
+  status: STATUS.IDLE,
+  error: null,
 };
 
 const cartSlice = createSlice({
