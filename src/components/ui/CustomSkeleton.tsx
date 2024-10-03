@@ -9,7 +9,7 @@ interface MediaProps {
 }
 
 const MediaSkeleton: FC<MediaProps> = ({ loading }) => {
-  const { products } = useAppSelector((state: RootState) => state.product);
+  const { products } = useAppSelector((state: RootState) => state.AllProducts);
 
   return (
     <>

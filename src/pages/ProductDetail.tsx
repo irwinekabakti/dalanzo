@@ -1,21 +1,15 @@
 import { FC, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-// import { useGetProductByIdQuery } from "../store/query/getProducts";
 import { useAppDispatch, useAppSelector } from "../store";
 import { addToCart } from "../store/slice/cart-slice";
 import Rating from "../components/ui/Rating";
 import { getCurrency } from "../utils/currencyUtils";
-import { getProductById } from "../store/asyncThunk/products-thunk";
+import { getProductById } from "../store/asyncThunk/productDetail-thunk";
 import { STATUS } from "../utils/status";
 
 const ProductDetail: FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
-  // const {
-  //   data: product,
-  //   isLoading,
-  //   isError,
-  // } = useGetProductByIdQuery(Number(id));
   const { product, status, error } = useAppSelector(
     (state) => state.productDetail
   );
@@ -40,9 +34,6 @@ const ProductDetail: FC = () => {
       dispatch(addToCart({ ...product, quantity: 1 }));
     }
   };
-
-  // if (isLoading) return <div>Loading...</div>;
-  // if (isError) return <div>Error loading product</div>;
 
   if (status === STATUS.LOADING) {
     return <div>Loading...</div>;
