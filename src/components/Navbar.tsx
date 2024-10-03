@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CustomModal from "./ui/CustomModal";
 import { useAppDispatch, useAppSelector } from "../store";
 import { setSearchProducts } from "../store/slice/products-slice";
+import { userLogout } from "../store/slice/auth-slice";
 import logoImg from "../assets/logo.svg";
 
 const Navbar: FC = () => {
@@ -40,7 +41,7 @@ const Navbar: FC = () => {
   };
 
   const handleLogoutConfirm = () => {
-    localStorage.removeItem("access_token");
+    dispatch(userLogout());
     setIsLogoutModalVisible(false);
     navigate("/products-list");
   };
@@ -92,7 +93,7 @@ const Navbar: FC = () => {
 
         <div
           className={`${
-            location.pathname !== "/products-list"
+            location.pathname !== "/products-list" && location.pathname !== "/"
               ? "hidden"
               : "search flex relative items-center"
           } `}

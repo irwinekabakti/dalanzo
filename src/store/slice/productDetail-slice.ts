@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ProductProps } from "../../types/type";
-import { getProductById } from "../asyncThunk/products-thunk";
+import { getProductById } from "../asyncThunk/productDetail-thunk";
 import { STATUS } from "../../utils/status";
 
 interface ProductDetailState {
