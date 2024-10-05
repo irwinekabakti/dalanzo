@@ -7,13 +7,13 @@ import { getCurrency } from "../utils/currencyUtils";
 import { getProductById } from "../store/asyncThunk/productDetail-thunk";
 import { STATUS } from "../utils/status";
 import SkeletonDetail from "../components/ui/Skeleton/SkeletonDetail";
+import { selectProductWithQuantity } from "../store/slice/productDetail-slice";
 
 const ProductDetail: FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
-  const { product, status, error } = useAppSelector(
-    (state) => state.productDetail
-  );
+  const { status, error } = useAppSelector((state) => state.productDetail);
+  const product = useAppSelector(selectProductWithQuantity);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"detail" | "categories">("detail");
 
@@ -21,7 +21,7 @@ const ProductDetail: FC = () => {
     if (id) {
       dispatch(getProductById(Number(id)));
     }
-  }, []);
+  }, [dispatch, id]);
 
   const handleAddToCart = () => {
     const user = localStorage.getItem("access_token");
@@ -32,8 +32,22 @@ const ProductDetail: FC = () => {
     }
 
     if (product) {
-      dispatch(addToCart({ ...product, quantity: 1 }));
+      dispatch(
+        addToCart({
+          ...product,
+          quantity: 1,
+          availableQuantity: product.quantity,
+        })
+      );
     }
+
+    // const product = useAppSelector(state => state.AllProducts.products.find(p => p.id === id));
+
+    // if (product && product.quantity > 0) {
+    //   dispatch(addToCart({ ...product, quantity: 1 }));
+    // } else {
+    //   toast.error("This product is out of stock.");
+    // }
   };
 
   if (status === STATUS.LOADING) {
@@ -117,16 +131,21 @@ const ProductDetail: FC = () => {
             )}
           </div>
 
-          <div className="flex justify-between items-center mb-4 mt-4">
-            <span className="text-2xl font-bold mr-2">
-              {getCurrency(product.price)}
-            </span>
-            <div className="flex items-center">
-              <Rating rating={product.rating.rate} />
-              <p className="ml-2">
-                {product.rating.rate} ({product.rating.count} reviews)
-              </p>
+          <div className="flex flex-col mb-4 mt-4">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-2xl font-bold mr-2">
+                {getCurrency(product.price)}
+              </span>
+              <div className="flex items-center">
+                <Rating rating={product.rating.rate} />
+                <p className="ml-2">
+                  {product.rating.rate} ({product.rating.count} reviews)
+                </p>
+              </div>
             </div>
+            <p className="text-gray-600">
+              Quantity in stock: {product.quantity || "Not available"}
+            </p>
           </div>
           <button
             className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"

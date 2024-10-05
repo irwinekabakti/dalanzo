@@ -7,6 +7,7 @@ interface CartItem {
   price: number;
   image: string;
   quantity: number;
+  availableQuantity: number;
 }
 
 interface CartState {
@@ -30,9 +31,19 @@ const cartSlice = createSlice({
         (item) => item.id === action.payload.id
       );
       if (existingItem) {
-        existingItem.quantity += action.payload.quantity;
+        const newQuantity = existingItem.quantity + action.payload.quantity;
+        existingItem.quantity = Math.min(
+          newQuantity,
+          existingItem.availableQuantity
+        );
       } else {
-        state.items.push(action.payload);
+        state.items.push({
+          ...action.payload,
+          quantity: Math.min(
+            action.payload.quantity,
+            action.payload.availableQuantity
+          ),
+        });
       }
     },
     updateCartItemQuantity: (
@@ -41,7 +52,10 @@ const cartSlice = createSlice({
     ) => {
       const item = state.items.find((item) => item.id === action.payload.id);
       if (item) {
-        item.quantity = action.payload.quantity;
+        item.quantity = Math.min(
+          action.payload.quantity,
+          item.availableQuantity
+        );
       }
     },
     removeFromCart: (state, action: PayloadAction<number>) => {
@@ -50,9 +64,28 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
     },
+    decreaseProductQuantity: (
+      state,
+      action: PayloadAction<{ id: number; quantity: number }>
+    ) => {
+      const item = state.items.find((item) => item.id === action.payload.id);
+      if (item) {
+        item.availableQuantity = Math.max(
+          0,
+          item.availableQuantity - action.payload.quantity
+        );
+        item.quantity = Math.min(item.quantity, item.availableQuantity);
+      }
+    },
   },
 });
 
-export const { addToCart, updateCartItemQuantity, removeFromCart, clearCart } =
-  cartSlice.actions;
+export const {
+  addToCart,
+  updateCartItemQuantity,
+  removeFromCart,
+  clearCart,
+  decreaseProductQuantity,
+} = cartSlice.actions;
+
 export default cartSlice;

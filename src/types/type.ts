@@ -9,6 +9,7 @@ export interface ProductProps {
     rate: number;
   };
   title: string;
+  quantity: number;
 }
 
 export interface UserInfoProps {
