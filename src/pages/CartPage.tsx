@@ -3,9 +3,11 @@ import { useAppSelector, useAppDispatch } from "../store";
 import {
   updateCartItemQuantity,
   removeFromCart,
+  clearCart,
 } from "../store/slice/cart-slice";
 import { useNavigate } from "react-router-dom";
 import { getCurrency } from "../utils/currencyUtils";
+import { toast } from "react-toastify";
 
 const CartPage: FC = () => {
   const cartItems = useAppSelector((state) => state.cart.items);
@@ -26,6 +28,20 @@ const CartPage: FC = () => {
   );
 
   const handleCancel = () => {
+    navigate("/products-list");
+  };
+
+  const handleCheckout = () => {
+    toast.success("Checkout successful!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+
+    dispatch(clearCart());
     navigate("/products-list");
   };
 
@@ -106,7 +122,7 @@ const CartPage: FC = () => {
                 Cancel
               </button>
               <button
-                onClick={handleCancel}
+                onClick={handleCheckout}
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
               >
                 Checkout

@@ -19,7 +19,8 @@ const MediaCard: FC<MediaCardProps> = ({ productsFilter }) => {
     <>
       {productsFilter.map((product: ProductProps) => (
         <div
-          className="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer"
+          className="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
+          // className="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer"
           key={product?.id}
           onClick={() => navigate(`/product-detail/${product.id}`)}
         >
@@ -28,6 +29,11 @@ const MediaCard: FC<MediaCardProps> = ({ productsFilter }) => {
             src={product?.image}
             alt={product?.title}
           />
+          <div className="category">
+            <span className="text-gray-900 bg-slate-500 px-2 py-1 rounded-e-full text-xs">
+              {product.category}
+            </span>
+          </div>
           <div className="p-4">
             <h5 className="text-xl font-bold mb-2">
               {truncateText(product?.title, 30)}

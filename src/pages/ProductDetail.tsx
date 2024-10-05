@@ -55,6 +55,7 @@ const ProductDetail: FC = () => {
             className="w-full h-auto object-contain"
           />
         </div>
+
         <div className="md:w-1/2 md:pl-8 mt-4 md:mt-0">
           <div className="mb-4">
             <div className="flex border-b">
