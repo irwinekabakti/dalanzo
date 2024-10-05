@@ -1,22 +1,19 @@
-import { FC, useState, useRef, useEffect } from "react";
+import { FC, useState } from "react";
 import { FaCartShopping } from "react-icons/fa6";
-import { IoSearch, IoMenu, IoClose } from "react-icons/io5";
-import { useLocation, useNavigate } from "react-router-dom";
+import { IoMenu, IoClose } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 import CustomModal from "./ui/CustomModal";
 import { useAppDispatch, useAppSelector } from "../store";
-import { setSearchProducts } from "../store/slice/products-slice";
 import { userLogout } from "../store/slice/auth-slice";
 import logoImg from "../assets/logo.svg";
 
 const Navbar: FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
-  const [searchOpen, setSearchOpen] = useState<boolean>(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const [isLogoutModalVisible, setIsLogoutModalVisible] =
     useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const location = useLocation();
   const user = localStorage.getItem("access_token");
 
   const cartItems = useAppSelector((state) => state.cart.items);
@@ -27,13 +24,6 @@ const Navbar: FC = () => {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
-  };
-
-  const toggleSearch = () => {
-    setSearchOpen(!searchOpen);
-    if (!searchOpen && searchInputRef.current) {
-      setTimeout(() => searchInputRef.current?.focus(), 0);
-    }
   };
 
   const handleLogoutClick = () => {
@@ -49,28 +39,6 @@ const Navbar: FC = () => {
   const handleLogoutCancel = () => {
     setIsLogoutModalVisible(false);
   };
-
-  const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    dispatch(setSearchProducts(event.target.value));
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchInputRef.current &&
-        !searchInputRef.current.contains(event.target as Node)
-      ) {
-        setSearchOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const handleProductsList = () => {
     navigate("/products-list");
@@ -89,35 +57,6 @@ const Navbar: FC = () => {
         >
           <img src={logoImg} alt="logo-img" className="h-6 w-6" />
           <h1 className="text-2xl ">Dalanzo</h1>
-        </div>
-
-        <div
-          className={`${
-            location.pathname !== "/products-list" && location.pathname !== "/"
-              ? "hidden"
-              : "search flex relative items-center"
-          } `}
-        >
-          <div className="relative">
-            <IoSearch
-              size={24}
-              className={`${
-                searchOpen ? "text-black" : " text-black"
-              } cursor-pointer absolute left-3 top-1/2 transform -translate-y-1/2 z-10`}
-              onClick={toggleSearch}
-            />
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder="Search products..."
-              className={`w-full pl-10 pr-4 py-2 rounded-md text-black transition-all duration-300 ${
-                searchOpen || window.innerWidth >= 768
-                  ? "w-40 opacity-100"
-                  : "w-0 opacity-0 sm:hidden"
-              }`}
-              onChange={handleSearchInputChange}
-            />
-          </div>
         </div>
 
         <div className="sm:block md:hidden">

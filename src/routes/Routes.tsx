@@ -5,6 +5,7 @@ import RootLayout from "./RootLayout/RootLayout";
 import ProductsList from "../pages/ProductsList";
 import ProductDetail from "../pages/ProductDetail";
 import CartPage from "../pages/CartPage";
+import ErrorPage from "../pages/ErrorPage";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -37,6 +38,7 @@ const Routes = (): RouteObject[] => {
     {
       path: "/",
       element: <RootLayout />,
+      errorElement: <ErrorPage />,
       children: [
         {
           index: true,
@@ -57,6 +59,10 @@ const Routes = (): RouteObject[] => {
               <CartPage />
             </ProtectedRoute>
           ),
+        },
+        {
+          path: "*",
+          element: <ErrorPage />,
         },
       ],
     },
