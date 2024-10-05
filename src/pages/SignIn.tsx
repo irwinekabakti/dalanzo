@@ -1,9 +1,11 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useNavigate, useLocation } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginThunk } from "../store/asyncThunk/auth-thunk";
 import { useAppDispatch, useAppSelector } from "../store";
+
 interface LoginFormData {
   username: string;
   password: string;
@@ -21,6 +23,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const SignIn: FC = () => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -77,17 +80,25 @@ const SignIn: FC = () => {
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
-                  <div className="my-8">
+                  <div className="my-8 relative">
                     <label htmlFor="password" className="text-gray-600">
                       Password
                     </label>
-                    <Field
-                      id="password"
-                      name="password"
-                      type="password"
-                      className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                      placeholder="Password"
-                    />
+                    <div className="relative">
+                      <Field
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                        placeholder="Password"
+                      />
+                      <span
+                        className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </span>
+                    </div>
                     <ErrorMessage
                       name="password"
                       component="div"

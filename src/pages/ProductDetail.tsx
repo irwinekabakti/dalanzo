@@ -6,6 +6,7 @@ import Rating from "../components/ui/Rating";
 import { getCurrency } from "../utils/currencyUtils";
 import { getProductById } from "../store/asyncThunk/productDetail-thunk";
 import { STATUS } from "../utils/status";
+import SkeletonDetail from "../components/ui/Skeleton/SkeletonDetail";
 
 const ProductDetail: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,7 +37,26 @@ const ProductDetail: FC = () => {
   };
 
   if (status === STATUS.LOADING) {
-    return <div>Loading...</div>;
+    return (
+      <div className="container mx-auto px-4 py-8 min-h-screen">
+        <div className="flex flex-col md:flex-row">
+          <div className="md:w-1/2">
+            <SkeletonDetail className="w-full h-96" />
+          </div>
+          <div className="md:w-1/2 md:pl-8 mt-4 md:mt-0">
+            <SkeletonDetail className="h-8 w-2/3 mb-4" />
+            <SkeletonDetail className="h-6 w-full mb-4" />
+            <SkeletonDetail className="h-6 w-full mb-4" />
+            <SkeletonDetail className="h-6 w-1/2 mb-4" />
+            <div className="flex items-center">
+              <SkeletonDetail className="h-8 w-1/4 mr-4" />
+              <SkeletonDetail className="h-6 w-1/3" />
+            </div>
+            <SkeletonDetail className="h-10 w-1/4 mt-8" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (status === STATUS.FAILED) {

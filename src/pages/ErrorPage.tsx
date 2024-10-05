@@ -22,14 +22,14 @@ const ErrorPage: FC = () => {
 
   return (
     <div className="relative min-h-screen flex flex-col justify-center items-center">
-      <div className="absolute top-4 text-xl font-semibold text-red-500">
-        Redirecting in {countdown}...
-      </div>
-
       <h1 className="text-4xl mb-4 font-bold">Page is not found !</h1>
       <p className="text-2xl font-bold">
         You will be redirected to the home page
       </p>
+
+      <div className=" font-semibold text-red-500 pt-12">
+        <p className="text-xl">Redirecting in {countdown}...</p>
+      </div>
     </div>
   );
 };
