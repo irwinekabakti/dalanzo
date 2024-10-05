@@ -3,6 +3,10 @@ import { ProductProps } from "../../types/type";
 import { getAllProducts } from "../asyncThunk/products-thunk";
 import { STATUS } from "../../utils/status";
 
+const getRandomQuantity = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 interface ProductState {
   products: ProductProps[];
   searchProducts: string;
@@ -27,6 +31,18 @@ const productSlice = createSlice({
     setSearchProducts: (state, action: PayloadAction<string>) => {
       state.searchProducts = action.payload;
     },
+    updateProductQuantity: (
+      state,
+      action: PayloadAction<{ id: number; quantity: number }>
+    ) => {
+      const product = state.products.find((p) => p.id === action.payload.id);
+      if (product) {
+        product.quantity = Math.max(
+          0,
+          product.quantity - action.payload.quantity
+        );
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -35,14 +51,19 @@ const productSlice = createSlice({
       })
       .addCase(getAllProducts.fulfilled, (state, action) => {
         state.status = STATUS.SUCCEEDED;
-        state.products = action.payload;
+
+        state.products = action.payload.map((product: ProductProps) => ({
+          ...product,
+          quantity: getRandomQuantity(20, 100),
+        }));
       })
       .addCase(getAllProducts.rejected, (state, action) => {
-        state.status = STATUS.LOADING;
+        state.status = STATUS.FAILED;
         state.error = action.error.message;
       });
   },
 });
 
-export const { setProducts, setSearchProducts } = productSlice.actions;
+export const { setProducts, setSearchProducts, updateProductQuantity } =
+  productSlice.actions;
 export default productSlice;

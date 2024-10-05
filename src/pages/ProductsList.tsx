@@ -9,7 +9,7 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
-import MediaSkeleton from "../components/ui/CustomSkeleton";
+import MediaSkeleton from "../components/ui/Skeleton/CustomSkeleton";
 import Hero from "../components/Hero";
 import MediaCard from "../components/ui/MediaCard";
 import { getAllProducts } from "../store/asyncThunk/products-thunk";
@@ -35,7 +35,6 @@ const ProductsList: FC = () => {
   const selectedCategory = useAppSelector(
     (state) => state.categoriesProducts.selectedCategory
   );
-
   const [filteredProducts, setFilteredProducts] = useState(products || []);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -92,7 +91,7 @@ const ProductsList: FC = () => {
     <>
       <Hero />
 
-      <div className="py-4 block md:flex justify-between mx-4 md:mx-8">
+      <div className="py-4 block md:flex justify-between mx-4 md:mx-8 my-4">
         <TextField
           inputRef={searchInputRef}
           placeholder="Search products..."

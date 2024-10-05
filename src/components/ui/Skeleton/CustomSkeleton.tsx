@@ -2,7 +2,7 @@ import { FC } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Skeleton from "@mui/material/Skeleton";
-import { RootState, useAppSelector } from "../../store";
+import { RootState, useAppSelector } from "../../../store";
 
 interface MediaProps {
   loading?: boolean;

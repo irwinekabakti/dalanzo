@@ -5,17 +5,24 @@ import {
   removeFromCart,
   clearCart,
 } from "../store/slice/cart-slice";
+import { updateProductQuantity } from "../store/slice/products-slice";
 import { useNavigate } from "react-router-dom";
 import { getCurrency } from "../utils/currencyUtils";
 import { toast } from "react-toastify";
 
 const CartPage: FC = () => {
   const cartItems = useAppSelector((state) => state.cart.items);
+  const products = useAppSelector((state) => state.AllProducts.products);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleQuantityChange = (id: number, newQuantity: number) => {
-    dispatch(updateCartItemQuantity({ id, quantity: newQuantity }));
+    const product = products.find((p) => p.id === id);
+    if (product && newQuantity <= product.quantity) {
+      dispatch(updateCartItemQuantity({ id, quantity: newQuantity }));
+    } else {
+      toast.error("Requested quantity exceeds available stock.");
+    }
   };
 
   const handleRemoveItem = (id: number) => {
@@ -32,6 +39,11 @@ const CartPage: FC = () => {
   };
 
   const handleCheckout = () => {
+    // Update product quantities
+    cartItems.forEach((item) => {
+      dispatch(updateProductQuantity({ id: item.id, quantity: item.quantity }));
+    });
+
     toast.success("Checkout successful!", {
       position: "top-right",
       autoClose: 3000,
@@ -69,44 +81,52 @@ const CartPage: FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {cartItems.map((item) => (
-                  <tr key={item.id} className="border-b">
-                    <td className="block px-4 py-4 md:flex items-center">
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-16 h-16 object-contain mr-4"
-                      />
-                      <span className="py-2">{item.title}</span>
-                    </td>
-                    <td className="px-4 py-4">${item.price.toFixed(2)}</td>
-                    <td className="px-4 py-4">
-                      <input
-                        type="number"
-                        min="1"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          handleQuantityChange(
-                            item.id,
-                            parseInt(e.target.value)
-                          )
-                        }
-                        className="w-16 px-2 py-1 border rounded"
-                      />
-                    </td>
-                    <td className="px-4 py-4">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </td>
-                    <td className="px-4 py-4">
-                      <button
-                        onClick={() => handleRemoveItem(item.id)}
-                        className="bg-red-500 text-white hover:bg-red-700 px-4 py-2 rounded-lg"
-                      >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {cartItems.map((item) => {
+                  const product = products.find((p) => p.id === item.id);
+                  const availableQuantity = product ? product.quantity : 0;
+                  return (
+                    <tr key={item.id} className="border-b">
+                      <td className="block px-4 py-4 md:flex items-center">
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="w-16 h-16 object-contain mr-4"
+                        />
+                        <span className="py-2">{item.title}</span>
+                      </td>
+                      <td className="px-4 py-4">{getCurrency(item.price)}</td>
+                      <td className="px-4 py-4">
+                        <input
+                          type="number"
+                          min="1"
+                          max={availableQuantity}
+                          value={item.quantity}
+                          onChange={(e) =>
+                            handleQuantityChange(
+                              item.id,
+                              parseInt(e.target.value)
+                            )
+                          }
+                          className="w-16 px-2 py-1 border rounded"
+                        />
+                        <span className="ml-2 text-sm text-gray-500">
+                          (Max: {availableQuantity})
+                        </span>
+                      </td>
+                      <td className="px-4 py-4">
+                        {getCurrency(item.price * item.quantity)}
+                      </td>
+                      <td className="px-4 py-4">
+                        <button
+                          onClick={() => handleRemoveItem(item.id)}
+                          className="bg-red-500 text-white hover:bg-red-700 px-4 py-2 rounded-lg"
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -124,6 +144,7 @@ const CartPage: FC = () => {
               <button
                 onClick={handleCheckout}
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                disabled={cartItems.length === 0}
               >
                 Checkout
               </button>
