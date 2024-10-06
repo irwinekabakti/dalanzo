@@ -60,7 +60,6 @@ const Navbar: FC = () => {
 
   const handleAccountClick = () => {
     setDropdownOpen(!dropdownOpen);
-    // setDropdownOpen((prev) => !prev);
   };
 
   useEffect(() => {

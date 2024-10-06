@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginThunk } from "../store/asyncThunk/auth-thunk";
 import { useAppDispatch, useAppSelector } from "../store";
+import { toast, ToastContainer } from "react-toastify";
 
 interface LoginFormData {
   username: string;
@@ -42,14 +43,26 @@ const SignIn: FC = () => {
     const resultAction = await dispatch(loginThunk(values));
 
     if (loginThunk.fulfilled.match(resultAction)) {
+      // setTimeout(() => {
+      //   toast.success("Login successful!", {
+      //     position: "top-right",
+      //   });
+      // }, 100);
+
+      // setTimeout(() => {
       navigate(urlPath, { replace: true });
+      // }, 500);
     } else {
       console.error("Failed to login:", resultAction.payload);
+      toast.error("Login failed. Please check your credentials !", {
+        position: "top-right",
+      });
     }
   };
 
   return (
     <div className="bg-white min-h-screen">
+      <ToastContainer />
       <h2 className="pt-24 text-center text-3xl font-extrabold text-gray-900">
         Login
       </h2>

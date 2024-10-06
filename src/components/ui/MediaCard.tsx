@@ -20,7 +20,6 @@ const MediaCard: FC<MediaCardProps> = ({ productsFilter }) => {
       {productsFilter.map((product: ProductProps) => (
         <div
           className="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
-          // className="bg-white shadow-md rounded-lg overflow-hidden cursor-pointer"
           key={product?.id}
           onClick={() => navigate(`/product-detail/${product.id}`)}
         >

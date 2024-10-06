@@ -39,7 +39,6 @@ const CartPage: FC = () => {
   };
 
   const handleCheckout = () => {
-    // Update product quantities
     cartItems.forEach((item) => {
       dispatch(updateProductQuantity({ id: item.id, quantity: item.quantity }));
     });
