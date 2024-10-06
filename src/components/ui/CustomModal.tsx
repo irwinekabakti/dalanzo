@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { TiInfoLarge } from "react-icons/ti";
 
 interface CustomModalProps {
   title: string;
@@ -26,6 +27,9 @@ const CustomModal: FC<CustomModalProps> = ({
         className="bg-white p-4 rounded-lg shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="flex justify-center mb-2">
+          <TiInfoLarge size={44} />
+        </div>
         <h2 className="text-lg mb-4 text-[#000]">{title}</h2>
         <div className="flex justify-end">
           <button

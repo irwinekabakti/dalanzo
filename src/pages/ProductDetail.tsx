@@ -40,14 +40,6 @@ const ProductDetail: FC = () => {
         })
       );
     }
-
-    // const product = useAppSelector(state => state.AllProducts.products.find(p => p.id === id));
-
-    // if (product && product.quantity > 0) {
-    //   dispatch(addToCart({ ...product, quantity: 1 }));
-    // } else {
-    //   toast.error("This product is out of stock.");
-    // }
   };
 
   if (status === STATUS.LOADING) {
