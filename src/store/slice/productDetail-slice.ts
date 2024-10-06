@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ProductProps } from "../../types/type";
 import { getProductById } from "../asyncThunk/productDetail-thunk";
 import { STATUS } from "../../utils/status";
@@ -39,20 +39,23 @@ const productDetailSlice = createSlice({
   },
 });
 
-export const selectProductWithQuantity = (
-  state: RootState
-): ProductProps | null => {
-  const productDetail = state.productDetail.product;
-  if (!productDetail) return null;
+const selectProductDetail = (state: RootState) => state.productDetail.product;
+const selectAllProducts = (state: RootState) => state.AllProducts.products;
 
-  const productFromList = state.AllProducts.products.find(
-    (product) => product.id === productDetail.id
-  );
+export const selectProductWithQuantity = createSelector(
+  [selectProductDetail, selectAllProducts],
+  (productDetail, allProducts) => {
+    if (!productDetail) return null;
 
-  return {
-    ...productDetail,
-    quantity: productFromList?.quantity ?? 0,
-  };
-};
+    const productFromList = allProducts.find(
+      (product) => product.id === productDetail.id
+    );
+
+    return {
+      ...productDetail,
+      quantity: productFromList?.quantity ?? 0,
+    };
+  }
+);
 
 export default productDetailSlice;
